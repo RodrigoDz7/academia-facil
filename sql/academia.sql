@@ -1,0 +1,7 @@
+-- SCRIPT DO BANCO DE DADOS (será criado na Entrega 2)
+-- Nesta entrega ele só descreve o plano. Banco: academia_facil
+--
+-- planos   (id, nome, preco, duracao_meses)
+-- usuarios (id, nome, email, senha, nivel [admin/instrutor/aluno], plano_id -> planos.id)
+-- aulas    (id, titulo, descricao, dia_hora, vagas, instrutor_id -> usuarios.id)
+-- reservas (id, aluno_id -> usuarios.id, aula_id -> aulas.id, data_reserva)
