@@ -1,3 +1,11 @@
-// MIDDLEWARE DE AUTORIZAÇÃO (a fazer na Entrega 2)
-// Roda depois da autenticação. Confere se o nível do usuário
-// (admin, instrutor ou aluno) pode acessar aquela rota.
+// Autorização responde “o que você pode fazer?” conferindo o nível permitido.
+function permitir(...niveis) {
+  return (req, res, next) => {
+    if (!req.usuario || !niveis.includes(req.usuario.nivel)) {
+      return res.status(403).json({ mensagem: 'Você não tem permissão para acessar este recurso' });
+    }
+    return next();
+  };
+}
+
+module.exports = permitir;

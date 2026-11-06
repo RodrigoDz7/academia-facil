@@ -1,3 +1,23 @@
-// MIDDLEWARE DE AUTENTICAÇÃO (a fazer na Entrega 2)
-// Roda antes do controller. Confere se a requisição trouxe um token JWT válido
-// e descobre quem é o usuário logado.
+const jwt = require('jsonwebtoken');
+
+// Autenticação responde “quem é você?” validando o token recebido.
+function autenticacao(req, res, next) {
+  const cabecalho = req.headers.authorization;
+  const token = cabecalho && cabecalho.startsWith('Bearer ')
+    ? cabecalho.slice(7)
+    : null;
+
+  if (!token) {
+    return res.status(401).json({ mensagem: 'Token de autenticação não informado' });
+  }
+
+  try {
+    const dados = jwt.verify(token, process.env.JWT_SECRET);
+    req.usuario = { id: dados.id, nivel: dados.nivel };
+    return next();
+  } catch (_erro) {
+    return res.status(401).json({ mensagem: 'Token inválido ou expirado' });
+  }
+}
+
+module.exports = autenticacao;
