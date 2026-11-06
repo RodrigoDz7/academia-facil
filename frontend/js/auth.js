@@ -1,4 +1,3 @@
-// O front e a API usam a mesma origem porque o Express serve estes arquivos.
 const API = '';
 
 function salvarSessao(token, usuario) {

@@ -1,4 +1,3 @@
-// Autorização responde “o que você pode fazer?” conferindo o nível permitido.
 function permitir(...niveis) {
   return (req, res, next) => {
     if (!req.usuario || !niveis.includes(req.usuario.nivel)) {

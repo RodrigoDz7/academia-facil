@@ -18,7 +18,6 @@ async function cadastrar(req, res, next) {
   try {
     const senhaHash = await bcrypt.hash(senha, 10);
     const emailNormalizado = email.trim().toLowerCase();
-    // O nível é fixo no SQL para impedir que o cadastro público crie admins.
     const [resultado] = await pool.execute(
       'INSERT INTO usuarios (nome, email, senha, nivel) VALUES (?, ?, ?, \'aluno\')',
       [nome.trim(), emailNormalizado, senhaHash],

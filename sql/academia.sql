@@ -1,11 +1,9 @@
--- Execute na raiz do projeto: mysql -u root -p < sql/academia.sql
 CREATE DATABASE IF NOT EXISTS academia_facil
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
 USE academia_facil;
 
--- Apaga primeiro as tabelas dependentes para permitir executar novamente.
 DROP TABLE IF EXISTS reservas;
 DROP TABLE IF EXISTS aulas;
 DROP TABLE IF EXISTS usuarios;

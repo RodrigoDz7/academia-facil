@@ -1,9 +1,6 @@
-# Bibliotecas instaladas (cada pessoa instala com npm install)
 node_modules/
 
-# Senhas e chaves: NUNCA vão para o GitHub
 .env
 
-# Arquivos de log e de sistema
 *.log
 .DS_Store

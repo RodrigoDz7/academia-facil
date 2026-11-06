@@ -9,7 +9,6 @@ async function criarUsuario({ nome, email, nivel, planoId = null }) {
 
   if (existentes.length > 0) return;
 
-  // A senha fixa serve apenas para facilitar os testes em desenvolvimento.
   const senha = await bcrypt.hash('123456', 10);
   await pool.execute(
     'INSERT INTO usuarios (nome, email, senha, nivel, plano_id) VALUES (?, ?, ?, ?, ?)',

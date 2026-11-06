@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 
-// Autenticação responde “quem é você?” validando o token recebido.
 function autenticacao(req, res, next) {
   const cabecalho = req.headers.authorization;
   const token = cabecalho && cabecalho.startsWith('Bearer ')

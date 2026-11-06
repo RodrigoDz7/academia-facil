@@ -1,4 +1,3 @@
-// Carrega as configurações da pasta backend mesmo quando o comando roda em outra pasta.
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 

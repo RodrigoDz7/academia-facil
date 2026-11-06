@@ -17,7 +17,6 @@ app.get('/status', (_req, res) => res.json({ mensagem: 'API da Academia Fácil f
 app.use('/auth', authRoutes);
 app.use('/usuarios', usuariosRoutes);
 
-// O Express 5 encaminha automaticamente rejeições de async; esta rota fecha o JSON 404.
 app.use((_req, res) => res.status(404).json({ mensagem: 'Rota não encontrada' }));
 app.use((erro, _req, res, _next) => {
   console.error('Erro interno na API:', erro.message);
