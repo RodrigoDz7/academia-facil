@@ -1,3 +1,10 @@
-// ROTAS DE USUÁRIOS (a fazer na Entrega 2/3)
-// Vai ligar as URLs de /usuarios ao usuariosController.
-// Somente o admin poderá usar, protegido pelos middlewares.
+const express = require('express');
+const usuariosController = require('../controllers/usuariosController');
+const autenticacao = require('../middlewares/autenticacaoMiddleware');
+const permitir = require('../middlewares/autorizacaoMiddleware');
+
+const router = express.Router();
+
+router.get('/', autenticacao, permitir('admin'), usuariosController.listar);
+
+module.exports = router;

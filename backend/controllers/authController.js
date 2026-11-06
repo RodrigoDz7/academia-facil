@@ -71,4 +71,19 @@ async function login(req, res, next) {
   }
 }
 
-module.exports = { cadastrar, login };
+async function perfil(req, res, next) {
+  try {
+    const [usuarios] = await pool.execute(
+      'SELECT id, nome, email, nivel, plano_id FROM usuarios WHERE id = ?',
+      [req.usuario.id],
+    );
+    if (usuarios.length === 0) {
+      return res.status(404).json({ mensagem: 'Usuário não encontrado' });
+    }
+    return res.json({ usuario: usuarios[0] });
+  } catch (erro) {
+    return next(erro);
+  }
+}
+
+module.exports = { cadastrar, login, perfil };
