@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Área do Administrador - Academia Fácil</title>
-  <link rel="stylesheet" href="css/style.css">
-</head>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Área do Administrador - Academia Fácil</title><link rel="stylesheet" href="css/style.css"></head>
 <body>
-  <h1>Área do Administrador</h1>
-  <p>Página em construção.</p>
+  <header class="barra-superior"><strong>Academia Fácil</strong><button id="sair" type="button">Sair</button></header>
+  <main class="conteudo">
+    <h1 id="saudacao">Área do Administrador</h1>
+    <p class="aviso">Aulas, reservas e planos: disponível na Entrega 3.</p>
+    <h2>Usuários cadastrados</h2>
+    <p id="mensagem-usuarios" class="mensagem" role="status"></p>
+    <table><thead><tr><th>Nome</th><th>E-mail</th><th>Nível</th></tr></thead><tbody id="lista-usuarios"></tbody></table>
+  </main>
+  <script src="js/auth.js"></script><script src="js/admin.js"></script>
 </body>
 </html>

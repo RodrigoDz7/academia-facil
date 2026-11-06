@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Área do Aluno - Academia Fácil</title>
-  <link rel="stylesheet" href="css/style.css">
-</head>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Área do Aluno - Academia Fácil</title><link rel="stylesheet" href="css/style.css"></head>
 <body>
-  <h1>Área do Aluno</h1>
-  <p>Página em construção.</p>
+  <header class="barra-superior"><strong>Academia Fácil</strong><button id="sair" type="button">Sair</button></header>
+  <main class="conteudo">
+    <h1 id="saudacao">Área do Aluno</h1>
+    <p class="aviso">Aulas e reservas: disponível na Entrega 3.</p>
+    <button id="testar-acesso" type="button">Testar acesso restrito</button>
+    <p id="resultado-acesso" class="mensagem" role="status"></p>
+  </main>
+  <script src="js/auth.js"></script><script src="js/aluno.js"></script>
 </body>
 </html>

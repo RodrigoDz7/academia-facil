@@ -1,1 +1,5 @@
-// Área do instrutor: vai criar, editar e excluir as próprias aulas (Entrega 3).
+if (exigirLogin('instrutor')) {
+  const usuario = getUsuario();
+  document.querySelector('#saudacao').textContent = `Olá, ${usuario.nome} (Instrutor)`;
+  document.querySelector('#sair').addEventListener('click', sair);
+}
