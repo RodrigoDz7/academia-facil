@@ -23,6 +23,7 @@ CREATE TABLE usuarios (
   senha VARCHAR(255) NOT NULL,
   nivel ENUM('admin', 'instrutor', 'aluno') NOT NULL DEFAULT 'aluno',
   plano_id INT NULL,
+  plano_expira_em DATE NULL,
   CONSTRAINT fk_usuarios_planos FOREIGN KEY (plano_id)
     REFERENCES planos(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;

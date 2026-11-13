@@ -21,6 +21,13 @@ async function executarSeed() {
     await criarUsuario({ nome: 'Administrador', email: 'admin@academia.com', nivel: 'admin' });
     await criarUsuario({ nome: 'Instrutor', email: 'instrutor@academia.com', nivel: 'instrutor' });
     await criarUsuario({ nome: 'Aluno', email: 'aluno@academia.com', nivel: 'aluno', planoId: 1 });
+    const [planos] = await pool.execute('SELECT duracao_meses FROM planos WHERE id = ?', [1]);
+    if (planos.length > 0) {
+      await pool.execute(
+        'UPDATE usuarios SET plano_id = 1, plano_expira_em = DATE_ADD(CURDATE(), INTERVAL ? MONTH) WHERE email = ? AND plano_expira_em IS NULL',
+        [planos[0].duracao_meses, 'aluno@academia.com'],
+      );
+    }
     console.log('Seed concluído. Usuários de teste criados ou já existentes.');
   } catch (erro) {
     console.error('Erro ao criar usuários de teste:', erro.message);
