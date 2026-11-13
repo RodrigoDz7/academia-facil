@@ -5,9 +5,13 @@
   <header class="barra-superior"><strong>Academia Fácil</strong><button id="sair" type="button">Sair</button></header>
   <main class="conteudo">
     <h1 id="saudacao">Área do Aluno</h1>
-    <p class="aviso">Aulas e reservas: disponível na Entrega 3.</p>
-    <button id="testar-acesso" type="button">Testar acesso restrito</button>
-    <p id="resultado-acesso" class="mensagem" role="status"></p>
+    <p id="estado-plano" class="aviso"></p>
+    <h2>Próximas aulas</h2>
+    <p id="mensagem-aulas" class="mensagem" role="status"></p>
+    <div class="tabela-rolagem"><table><thead><tr><th>Aula</th><th>Instrutor</th><th>Data</th><th>Vagas</th><th></th></tr></thead><tbody id="lista-aulas"></tbody></table></div>
+    <h2>Minhas reservas</h2>
+    <p id="mensagem-reservas" class="mensagem" role="status"></p>
+    <div class="tabela-rolagem"><table><thead><tr><th>Aula</th><th>Instrutor</th><th>Data</th><th></th></tr></thead><tbody id="lista-reservas"></tbody></table></div>
   </main>
   <script src="js/auth.js"></script><script src="js/aluno.js"></script>
 </body>

@@ -5,7 +5,24 @@
   <header class="barra-superior"><strong>Academia Fácil</strong><button id="sair" type="button">Sair</button></header>
   <main class="conteudo">
     <h1 id="saudacao">Área do Instrutor</h1>
-    <p class="aviso">Gerenciamento de aulas: disponível na Entrega 3.</p>
+    <section class="cartao painel">
+      <h2 id="titulo-form-aula">Criar aula</h2>
+      <form id="form-aula">
+        <input id="aula-id" name="id" type="hidden">
+        <label for="titulo">Título</label><input id="titulo" name="titulo" required minlength="2">
+        <label for="descricao">Descrição</label><textarea id="descricao" name="descricao" rows="3"></textarea>
+        <label for="dia_hora">Data e hora</label><input id="dia_hora" name="dia_hora" type="datetime-local" required>
+        <label for="vagas">Vagas</label><input id="vagas" name="vagas" type="number" min="1" step="1" required>
+        <button type="submit">Salvar aula</button><button id="cancelar-edicao" type="button" hidden>Cancelar edição</button>
+      </form>
+      <p id="mensagem-form" class="mensagem" role="status"></p>
+    </section>
+    <h2>Minhas aulas</h2>
+    <p id="mensagem-aulas" class="mensagem" role="status"></p>
+    <div class="tabela-rolagem"><table><thead><tr><th>Aula</th><th>Data</th><th>Vagas</th><th></th></tr></thead><tbody id="lista-aulas"></tbody></table></div>
+    <h2>Reservas da aula</h2>
+    <p id="mensagem-reservas" class="mensagem" role="status"></p>
+    <div class="tabela-rolagem"><table><thead><tr><th>Aluno</th><th>E-mail</th><th>Reservado em</th></tr></thead><tbody id="lista-reservas"></tbody></table></div>
   </main>
   <script src="js/auth.js"></script><script src="js/instrutor.js"></script>
 </body>

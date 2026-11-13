@@ -24,6 +24,13 @@ input {
   border-radius: 6px;
   font: inherit;
 }
+textarea, select {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font: inherit;
+}
 button {
   margin-top: 12px;
   padding: 12px 16px;
@@ -51,5 +58,10 @@ a { color: #166534; }
 }
 .conteudo { width: min(100% - 32px, 900px); margin: 32px auto; }
 .aviso { padding: 16px; border-radius: 8px; background: #e2e8f0; }
+.conteudo section { margin: 36px 0; }
+.painel { width: 100%; }
+.formulario-linha { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); align-items: end; margin: 16px 0; }
+.tabela-rolagem { overflow-x: auto; margin: 12px 0 24px; }
 table { width: 100%; border-collapse: collapse; background: #fff; }
 th, td { padding: 10px; border: 1px solid #cbd5e1; text-align: left; }
+td button { margin: 3px; }

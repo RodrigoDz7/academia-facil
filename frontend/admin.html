@@ -5,10 +5,43 @@
   <header class="barra-superior"><strong>Academia Fácil</strong><button id="sair" type="button">Sair</button></header>
   <main class="conteudo">
     <h1 id="saudacao">Área do Administrador</h1>
-    <p class="aviso">Aulas, reservas e planos: disponível na Entrega 3.</p>
-    <h2>Usuários cadastrados</h2>
-    <p id="mensagem-usuarios" class="mensagem" role="status"></p>
-    <table><thead><tr><th>Nome</th><th>E-mail</th><th>Nível</th></tr></thead><tbody id="lista-usuarios"></tbody></table>
+
+    <section>
+      <h2>Usuários</h2>
+      <p id="mensagem-usuarios" class="mensagem" role="status"></p>
+      <div class="tabela-rolagem"><table><thead><tr><th>Nome</th><th>E-mail</th><th>Nível</th><th>Plano do aluno</th></tr></thead><tbody id="lista-usuarios"></tbody></table></div>
+    </section>
+
+    <section>
+      <h2>Planos</h2>
+      <form id="form-plano" class="formulario-linha">
+        <input id="plano-id" type="hidden">
+        <label for="plano-nome">Nome</label><input id="plano-nome" required minlength="2">
+        <label for="plano-preco">Preço</label><input id="plano-preco" type="number" min="0" step="0.01" required>
+        <label for="plano-duracao">Duração em meses</label><input id="plano-duracao" type="number" min="1" step="1" required>
+        <button type="submit">Salvar plano</button><button id="cancelar-plano" type="button" hidden>Cancelar</button>
+      </form>
+      <p id="mensagem-planos" class="mensagem" role="status"></p>
+      <div class="tabela-rolagem"><table><thead><tr><th>Plano</th><th>Preço</th><th>Duração</th><th></th></tr></thead><tbody id="lista-planos"></tbody></table></div>
+    </section>
+
+    <section>
+      <h2>Aulas</h2>
+      <form id="form-aula" class="formulario-linha">
+        <input id="aula-id" type="hidden">
+        <label for="aula-titulo">Título</label><input id="aula-titulo" required minlength="2">
+        <label for="aula-descricao">Descrição</label><input id="aula-descricao">
+        <label for="aula-data">Data e hora</label><input id="aula-data" type="datetime-local" required>
+        <label for="aula-vagas">Vagas</label><input id="aula-vagas" type="number" min="1" step="1" required>
+        <label for="aula-instrutor">Instrutor</label><select id="aula-instrutor" required></select>
+        <button type="submit">Salvar aula</button><button id="cancelar-aula" type="button" hidden>Cancelar</button>
+      </form>
+      <p id="mensagem-aulas" class="mensagem" role="status"></p>
+      <div class="tabela-rolagem"><table><thead><tr><th>Aula</th><th>Instrutor</th><th>Data</th><th>Vagas</th><th></th></tr></thead><tbody id="lista-aulas"></tbody></table></div>
+      <h3>Reservas da aula</h3>
+      <p id="mensagem-reservas" class="mensagem" role="status"></p>
+      <div class="tabela-rolagem"><table><thead><tr><th>Aluno</th><th>E-mail</th><th>Reservado em</th></tr></thead><tbody id="lista-reservas"></tbody></table></div>
+    </section>
   </main>
   <script src="js/auth.js"></script><script src="js/admin.js"></script>
 </body>
