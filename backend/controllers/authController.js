@@ -73,7 +73,10 @@ async function login(req, res, next) {
 async function perfil(req, res, next) {
   try {
     const [usuarios] = await pool.execute(
-      'SELECT id, nome, email, nivel, plano_id FROM usuarios WHERE id = ?',
+      `SELECT id, nome, email, nivel, plano_id,
+        CASE WHEN plano_id IS NOT NULL AND plano_expira_em >= CURDATE()
+          THEN DATE_FORMAT(plano_expira_em, '%Y-%m-%d') ELSE NULL END AS plano_expira_em
+       FROM usuarios WHERE id = ?`,
       [req.usuario.id],
     );
     if (usuarios.length === 0) {

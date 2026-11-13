@@ -5,6 +5,9 @@ const express = require('express');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const usuariosRoutes = require('./routes/usuariosRoutes');
+const aulasRoutes = require('./routes/aulasRoutes');
+const reservasRoutes = require('./routes/reservasRoutes');
+const planosRoutes = require('./routes/planosRoutes');
 
 const app = express();
 
@@ -16,6 +19,9 @@ app.get('/', (_req, res) => res.redirect('/login.html'));
 app.get('/status', (_req, res) => res.json({ mensagem: 'API da Academia Fácil funcionando' }));
 app.use('/auth', authRoutes);
 app.use('/usuarios', usuariosRoutes);
+app.use('/aulas', aulasRoutes);
+app.use('/reservas', reservasRoutes);
+app.use('/planos', planosRoutes);
 
 app.use((_req, res) => res.status(404).json({ mensagem: 'Rota não encontrada' }));
 app.use((erro, _req, res, _next) => {
