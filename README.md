@@ -41,7 +41,7 @@ O que está implementado nesta entrega e o que ainda está planejado aparece na 
 | **Instrutor** | Criar, editar e excluir **somente as próprias aulas**; ver quem reservou nelas |
 | **Aluno** | Ver aulas; reservar e cancelar **as próprias** reservas; ver o próprio histórico |
 
-Na Entrega 2, os perfis já são gravados no banco e usados pelo middleware de autorização. As operações de aulas, reservas e planos continuam planejadas para a Entrega 3.
+Os perfis são gravados no banco e usados pelo middleware de autorização. Na Entrega 3, alunos reservam aulas, instrutores gerenciam as próprias aulas e administradores gerenciam planos e aulas.
 
 ## 5. Fluxo básico do sistema
 
@@ -69,7 +69,7 @@ HTML → DOM → JavaScript → Fetch → API Express → Middlewares → Contro
 academia-facil/
 ├── backend/
 │   ├── server.js
-│   ├── routes/              # URLs da API (aulas e reservas são da Entrega 3)
+│   ├── routes/              # URLs da API de autenticação, aulas, reservas e planos
 │   ├── controllers/         # regras de negócio e SQL
 │   ├── middlewares/         # autenticação JWT e autorização por perfil
 │   ├── database/
@@ -82,6 +82,7 @@ academia-facil/
 │   ├── css/style.css
 │   └── js/                  # auth.js compartilhado e scripts das telas
 ├── sql/academia.sql
+├── sql/entrega3.sql         # migração para bancos criados na Entrega 2
 ├── .gitignore
 └── README.md
 ```
@@ -100,7 +101,7 @@ O script `sql/academia.sql` cria o banco `academia_facil`, as tabelas relacionad
 | Tabela | Campos e restrições |
 |---|---|
 | `planos` | `id`, `nome`, `preco`, `duracao_meses` |
-| `usuarios` | `id`, `nome`, `email` (único), `senha` (hash bcrypt), `nivel` (ENUM `admin`, `instrutor`, `aluno`), `plano_id` opcional |
+| `usuarios` | `id`, `nome`, `email` (único), `senha` (hash bcrypt), `nivel` (ENUM `admin`, `instrutor`, `aluno`), `plano_id` e `plano_expira_em` opcionais |
 | `aulas` | `id`, `titulo`, `descricao`, `dia_hora`, `vagas`, `instrutor_id` |
 | `reservas` | `id`, `aluno_id`, `aula_id`, `data_reserva`; UNIQUE em (`aluno_id`, `aula_id`) |
 
@@ -110,11 +111,12 @@ O script `sql/academia.sql` cria o banco `academia_facil`, as tabelas relacionad
 
 - Não é possível reservar uma aula sem vagas.
 - O aluno não pode reservar a mesma aula duas vezes (há uma restrição UNIQUE no banco).
-- Só aluno com plano ativo pode reservar.
-- O instrutor só pode alterar ou excluir as próprias aulas.
+- Só aluno com plano não vencido pode reservar.
+- A reserva respeita as vagas e não pode ser duplicada.
+- O instrutor só pode criar, alterar ou excluir as próprias aulas e ver as reservas delas.
 - As permissões são verificadas **também na API**, e não apenas escondendo botões na tela.
 
-As regras de reserva e gestão de aulas/plano descritas aqui serão implementadas na Entrega 3. A restrição contra reserva duplicada já está no banco.
+Essas regras são verificadas pela API e complementadas pelas chaves e restrições do banco.
 
 ## Status do projeto
 
@@ -128,10 +130,11 @@ As regras de reserva e gestão de aulas/plano descritas aqui serão implementada
 | `GET /usuarios` restrito ao admin | ✅ Implementado (Entrega 2) |
 | Telas de login e cadastro | ✅ Implementado (Entrega 2) |
 | Áreas protegidas de aluno, instrutor e admin | ✅ Implementado (Entrega 2) |
-| CRUD de aulas | 🕒 Planejado (Entrega 3) |
-| Reservas, vagas, duplicidade na API e validação de plano ativo | 🕒 Planejado (Entrega 3) |
-| Gestão de planos | 🕒 Planejado (Entrega 3/4) |
-| Telas completas de aluno, instrutor e admin | 🕒 Planejado (Entrega 3/4) |
+| CRUD de aulas com autorização do instrutor | ✅ Implementado (Entrega 3) |
+| Reservas, vagas, duplicidade e plano vigente | ✅ Implementado (Entrega 3) |
+| Histórico e cancelamento de reservas do aluno | ✅ Implementado (Entrega 3) |
+| Gestão de planos e atribuição a alunos pelo admin | ✅ Implementado (Entrega 3) |
+| Telas de aulas, reservas e planos por perfil | ✅ Implementado (Entrega 3) |
 
 ## Como instalar e executar
 
@@ -142,6 +145,14 @@ Pré-requisitos: Node.js e MySQL instalados e em execução.
    ```bash
    mysql -u root -p < sql/academia.sql
    ```
+
+   Se você já tinha criado o banco usando a Entrega 2, execute uma vez a migração que adiciona a data de vencimento do plano:
+
+   ```bash
+   mysql -u root -p < sql/entrega3.sql
+   ```
+
+   Depois da migração, execute `npm run seed` novamente para ativar o plano do aluno de teste que já existia.
 
 2. Copie `backend/.env.example` para `backend/.env` e preencha os dados do MySQL. Gere e configure `JWT_SECRET` com:
 
@@ -172,7 +183,7 @@ O comando `npm run seed` cria os usuários abaixo se seus e-mails ainda não exi
 | Instrutor | `instrutor@academia.com` | `123456` |
 | Aluno (plano 1) | `aluno@academia.com` | `123456` |
 
-## Rotas da API (Entrega 2)
+## Rotas da API
 
 | Método | URL | Quem acessa | Descrição |
 |---|---|---|---|
@@ -181,10 +192,24 @@ O comando `npm run seed` cria os usuários abaixo se seus e-mails ainda não exi
 | `POST` | `/auth/login` | Público | Valida credenciais e retorna JWT |
 | `GET` | `/auth/perfil` | Usuário autenticado | Retorna o próprio perfil, sem senha |
 | `GET` | `/usuarios` | Admin autenticado | Lista usuários sem senhas |
+| `PATCH` | `/usuarios/:id/plano` | Admin autenticado | Atribui ou remove o plano de um aluno |
+| `GET` | `/aulas` | Usuário autenticado | Lista as próximas aulas e vagas disponíveis |
+| `GET` | `/aulas/minhas` | Instrutor ou admin | Lista aulas do instrutor ou todas para o admin |
+| `POST` | `/aulas` | Instrutor ou admin | Cria uma aula; instrutor fica associado ao próprio usuário |
+| `PUT` | `/aulas/:id` | Dono da aula ou admin | Atualiza uma aula |
+| `DELETE` | `/aulas/:id` | Dono da aula ou admin | Exclui aula e suas reservas |
+| `GET` | `/aulas/:id/reservas` | Instrutor dono ou admin | Lista alunos reservados na aula |
+| `GET` | `/reservas/minhas` | Aluno autenticado | Mostra o histórico de reservas do aluno |
+| `POST` | `/reservas` | Aluno autenticado | Reserva vaga se houver plano vigente e lugar disponível |
+| `DELETE` | `/reservas/:id` | Aluno dono da reserva | Cancela a própria reserva |
+| `GET` | `/planos` | Usuário autenticado | Lista planos |
+| `POST` | `/planos` | Admin autenticado | Cria plano |
+| `PUT` | `/planos/:id` | Admin autenticado | Atualiza plano |
+| `DELETE` | `/planos/:id` | Admin autenticado | Exclui plano |
 
 ## Autenticação e permissões
 
-No login, a API devolve um JWT com o identificador e o nível do usuário. O cliente envia o token no cabeçalho `Authorization: Bearer <token>`. O middleware de autenticação valida o token; o middleware de autorização confere se o nível pode acessar aquela rota. O cadastro público sempre cria um usuário `aluno`, mesmo que o pedido envie outro nível.
+No login, a API devolve um JWT com o identificador e o nível do usuário. O cliente envia o token no cabeçalho `Authorization: Bearer <token>`. O middleware de autenticação valida o token; o middleware de autorização confere se o nível pode acessar aquela rota. O cadastro público sempre cria um usuário `aluno`, mesmo que o pedido envie outro nível. Ao atribuir um plano, o sistema grava a data de vencimento usando a duração cadastrada; reserva só é aceita enquanto essa data não venceu.
 
 ## Como testar
 
@@ -205,19 +230,25 @@ curl -s -X POST http://localhost:3000/auth/login -H "Content-Type: application/j
 curl -s -X POST http://localhost:3000/auth/login -H "Content-Type: application/json" -d '{"email":"aluno@academia.com","senha":"123456"}'
 ```
 
-Troque `<TOKEN_ADMIN>` e `<TOKEN_ALUNO>` pelos tokens retornados:
+Troque `<TOKEN_ADMIN>` e `<TOKEN_ALUNO>` pelos tokens retornados. Para testar as funções da Entrega 3, use os mesmos tokens:
 
 ```bash
-# Perfil autenticado: 200
 curl -i http://localhost:3000/auth/perfil -H "Authorization: Bearer <TOKEN_ADMIN>"
-# Perfil sem token: 401
 curl -i http://localhost:3000/auth/perfil
-# Listagem com token de admin: 200
 curl -i http://localhost:3000/usuarios -H "Authorization: Bearer <TOKEN_ADMIN>"
-# Listagem com token de aluno: 403
 curl -i http://localhost:3000/usuarios -H "Authorization: Bearer <TOKEN_ALUNO>"
-# Listagem sem token: 401
 curl -i http://localhost:3000/usuarios
 ```
+
+Crie uma aula como instrutor (use uma data futura e troque o token):
+
+```bash
+curl -i -X POST http://localhost:3000/aulas \
+  -H "Authorization: Bearer <TOKEN_INSTRUTOR>" \
+  -H "Content-Type: application/json" \
+  -d '{"titulo":"Yoga","descricao":"Aula experimental","dia_hora":"2027-01-15T10:00","vagas":10}'
+```
+
+Para reservar, envie `POST /reservas` com `{"aula_id": 1}` e o token do aluno. O servidor responde `409` se a aula estiver cheia ou já estiver reservada; responde `403` se o plano estiver vencido ou ausente. Use `GET /reservas/minhas` para consultar e `DELETE /reservas/:id` para cancelar uma reserva própria.
 
 Para verificar a senha no banco, consulte `SELECT email, senha FROM usuarios;`: o valor de `senha` deve começar com `$2a$` ou `$2b$`, indicando hash bcrypt. O login com senha incorreta retorna `401` com uma mensagem genérica.
